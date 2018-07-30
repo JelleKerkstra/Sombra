@@ -1,6 +1,6 @@
 # Sombra
 
-[![Build Status](https://travis-ci.org/jellekerkstra/Sombra.svg?branch=master)](https://travis-ci.org/jellekerkstra/Sombra)
+[![Build Status](https://travis-ci.org/JelleKerkstra/Sombra.svg?branch=master)](https://travis-ci.org/JelleKerkstra/Sombra)
 
 Sombra is an open-source crowdfunding platform for charities.
 
