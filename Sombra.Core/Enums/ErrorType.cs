@@ -16,6 +16,7 @@
         CharityActionNotFound = 11,
         UserNotFound = 12,
         NoDonationsFound = 13,
-        InvalidUserKey = 14
+        InvalidUserKey = 14,
+        DatabaseError = 15
     }
 }

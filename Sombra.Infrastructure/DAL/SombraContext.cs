@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Sombra.Core;
+using Sombra.Core.Enums;
 using Sombra.Messaging;
 using Sombra.Messaging.Responses;
 
@@ -88,19 +89,17 @@ namespace Sombra.Infrastructure.DAL
         {
             return (await TrySaveChangesAsync())
                 ? CrudResponse<TResponse>.Success()
-                : new TResponse();
+                : CrudResponse<TResponse>.Error(ErrorType.DatabaseError);
         }
 
         public async Task<TResponse> TrySaveChangesAsync<TResponse>(Action<TResponse> responseModifierOnSuccess)
             where TResponse : CrudResponse<TResponse>, new()
         {
-            if (await TrySaveChangesAsync())
-            {
-                var response = CrudResponse<TResponse>.Success();
+            var response = await TrySaveChangesAsync<TResponse>();
+            if (response.IsSuccess)
                 responseModifierOnSuccess(response);
-                return response;
-            }
-            return new TResponse();
+
+            return response;
         }
     }
 }
