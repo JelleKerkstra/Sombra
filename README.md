@@ -1,6 +1,6 @@
 # Sombra
 
-[![Build Status](https://travis-ci.org/markslingerland/Sombra.svg?branch=master)](https://travis-ci.org/markslingerland/Sombra)
+[![Build Status](https://travis-ci.org/jellekerkstra/Sombra.svg?branch=master)](https://travis-ci.org/jellekerkstra/Sombra)
 
 Sombra is an open-source crowdfunding platform for charities.
 
@@ -60,7 +60,7 @@ docker-compose up
 
 ## Built With
 
-* [EasyNetQ](https://github.com/EasyNetQ/EasyNetQ/wiki/Introduction) - The framewore used to interact wiht RabbitMQ
+* [EasyNetQ](https://github.com/EasyNetQ/EasyNetQ/wiki/Introduction) - The framework used to interact with RabbitMQ
 
 ## Authors
 
