@@ -2,7 +2,6 @@
 using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
 using Sombra.CharityActionService.DAL;
-using Sombra.Core;
 using Sombra.Messaging.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ using UserKey = Sombra.CharityActionService.DAL.UserKey;
 
 namespace Sombra.CharityActionService
 {
-    public class UpdateCharityActionRequestHandler : IAsyncRequestHandler<UpdateCharityActionRequest, UpdateCharityActionResponse>
+    public class UpdateCharityActionRequestHandler : AsyncCrudRequestHandler<UpdateCharityActionRequest, UpdateCharityActionResponse>
     {
         private readonly CharityActionContext _context;
         private readonly IMapper _mapper;
@@ -27,17 +26,12 @@ namespace Sombra.CharityActionService
             _bus = bus;
         }
 
-        public async Task<UpdateCharityActionResponse> Handle(UpdateCharityActionRequest message)
+        public override async Task<UpdateCharityActionResponse> Handle(UpdateCharityActionRequest message)
         {
             var charityAction = await _context.CharityActions.Include(b => b.UserKeys).FirstOrDefaultAsync(b => b.CharityActionKey.Equals(message.CharityActionKey));
 
             if (charityAction == null)
-            {
-                return new UpdateCharityActionResponse
-                {
-                    ErrorType = ErrorType.NotFound
-                };
-            }
+                return Error(ErrorType.NotFound);
 
             _context.Entry(charityAction).CurrentValues.SetValues(message);
             _context.UserKeys.RemoveRange(charityAction.UserKeys);
@@ -45,12 +39,8 @@ namespace Sombra.CharityActionService
             _context.UserKeys.AddRange(mappedKeys);
             charityAction.UserKeys = mappedKeys;
 
-            if (!await _context.TrySaveChangesAsync()) return new UpdateCharityActionResponse();
-
-            var charityActionUpdatedEvent = _mapper.Map<CharityActionUpdatedEvent>(charityAction);
-            await _bus.PublishAsync(charityActionUpdatedEvent);
-
-            return UpdateCharityActionResponse.Success();
+            return await _context.TrySaveChangesAsync<UpdateCharityActionResponse>(async () =>
+                await _bus.PublishAsync<CharityAction, CharityActionUpdatedEvent>(charityAction, _mapper));
         }
     }
 }

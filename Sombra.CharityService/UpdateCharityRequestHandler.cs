@@ -2,7 +2,6 @@
 using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
 using Sombra.CharityService.DAL;
-using Sombra.Core;
 using Sombra.Messaging.Infrastructure;
 using System.Threading.Tasks;
 using Sombra.Core.Enums;
@@ -12,7 +11,7 @@ using Sombra.Messaging.Responses.Charity;
 
 namespace Sombra.CharityService
 {
-    public class UpdateCharityRequestHandler : IAsyncRequestHandler<UpdateCharityRequest, UpdateCharityResponse>
+    public class UpdateCharityRequestHandler : AsyncCrudRequestHandler<UpdateCharityRequest, UpdateCharityResponse>
     {
         private readonly CharityContext _context;
         private readonly IMapper _mapper;
@@ -25,24 +24,18 @@ namespace Sombra.CharityService
             _bus = bus;
         }
 
-        public async Task<UpdateCharityResponse> Handle(UpdateCharityRequest message)
+        public override async Task<UpdateCharityResponse> Handle(UpdateCharityRequest message)
         {
             var charity = await _context.Charities.FirstOrDefaultAsync(u => u.CharityKey == message.CharityKey);
             if (charity == null)
-            {
-                return new UpdateCharityResponse
-                {
-                    ErrorType = ErrorType.NotFound
-                };
-            }
+                return Error(ErrorType.NotFound);
 
             _context.Entry(charity).CurrentValues.SetValues(message);
-            if (!await _context.TrySaveChangesAsync()) return new UpdateCharityResponse();
 
-            var charityUpdatedEvent = _mapper.Map<CharityUpdatedEvent>(charity);
-            await _bus.PublishAsync(charityUpdatedEvent);
-
-            return UpdateCharityResponse.Success();
+            return await _context.TrySaveChangesAsync<UpdateCharityResponse>(async () =>
+            {
+                await _bus.PublishAsync<Charity, CharityUpdatedEvent>(charity, _mapper);
+            });
         }
     }
 }

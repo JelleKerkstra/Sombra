@@ -3,7 +3,6 @@ using AutoMapper;
 using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
 using Sombra.CharityService.DAL;
-using Sombra.Core;
 using Sombra.Core.Enums;
 using Sombra.Messaging.Events.Charity;
 using Sombra.Messaging.Infrastructure;
@@ -12,7 +11,7 @@ using Sombra.Messaging.Responses.Charity;
 
 namespace Sombra.CharityService
 {
-    public class ApproveCharityRequestHandler : IAsyncRequestHandler<ApproveCharityRequest, ApproveCharityResponse>
+    public class ApproveCharityRequestHandler : AsyncCrudRequestHandler<ApproveCharityRequest, ApproveCharityResponse>
     {
         private readonly CharityContext _context;
         private readonly IMapper _mapper;
@@ -25,30 +24,21 @@ namespace Sombra.CharityService
             _bus = bus;
         }
 
-        public async Task<ApproveCharityResponse> Handle(ApproveCharityRequest message)
+        public override async Task<ApproveCharityResponse> Handle(ApproveCharityRequest message)
         {
             var charity = await _context.Charities.FirstOrDefaultAsync(b => b.CharityKey.Equals(message.CharityKey));
             if (charity != null)
             {
                 if (charity.IsApproved)
-                    return new ApproveCharityResponse
-                    {
-                        ErrorType = ErrorType.AlreadyActive
-                    };
+                    return Error(ErrorType.AlreadyActive);
 
                 charity.IsApproved = true;
-                if (!await _context.TrySaveChangesAsync()) return new ApproveCharityResponse();
 
-                var charityCreatedEvent = _mapper.Map<CharityCreatedEvent>(charity);
-                await _bus.PublishAsync(charityCreatedEvent);
-
-                return ApproveCharityResponse.Success();
+                return await _context.TrySaveChangesAsync<ApproveCharityResponse>(async () =>
+                    await _bus.PublishAsync<Charity, CharityCreatedEvent>(charity, _mapper));
             }
 
-            return new ApproveCharityResponse
-            {
-                ErrorType = ErrorType.NotFound
-            };
+            return Error(ErrorType.NotFound);
         }
     }
 }

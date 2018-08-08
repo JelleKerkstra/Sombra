@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Threading.Tasks;
+using EasyNetQ;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Sombra.Core;
@@ -98,6 +99,16 @@ namespace Sombra.Infrastructure.DAL
             var response = await TrySaveChangesAsync<TResponse>();
             if (response.IsSuccess)
                 responseModifierOnSuccess(response);
+
+            return response;
+        }
+
+        public async Task<TResponse> TrySaveChangesAsync<TResponse>(Action publishAction)
+            where TResponse : CrudResponse<TResponse>, new()
+        {
+            var response = await TrySaveChangesAsync<TResponse>();
+            if (response.IsSuccess)
+                publishAction();
 
             return response;
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using EasyNetQ;
 using Sombra.Core;
 
@@ -44,5 +45,9 @@ namespace Sombra.Messaging.Infrastructure
 
             return bus;
         }
+
+        public static Task PublishAsync<TSource, TEvent>(this IBus bus, TSource source, IMapper mapper)
+            where TEvent : class, IEvent
+        => bus.PublishAsync(mapper.Map<TEvent>(source));
     }
 }

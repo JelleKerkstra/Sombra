@@ -11,7 +11,9 @@ using Sombra.Messaging.Responses.CharityAction;
 
 namespace Sombra.CharityActionService
 {
-    public class ApproveCharityActionRequestHandler : IAsyncRequestHandler<ApproveCharityActionRequest, ApproveCharityActionResponse>
+    public class
+        ApproveCharityActionRequestHandler : AsyncCrudRequestHandler<ApproveCharityActionRequest,
+            ApproveCharityActionResponse>
     {
         private readonly CharityActionContext _context;
         private readonly IMapper _mapper;
@@ -24,30 +26,23 @@ namespace Sombra.CharityActionService
             _bus = bus;
         }
 
-        public async Task<ApproveCharityActionResponse> Handle(ApproveCharityActionRequest message)
+        public override async Task<ApproveCharityActionResponse> Handle(ApproveCharityActionRequest message)
         {
-            var charityAction = await _context.CharityActions.FirstOrDefaultAsync(b => b.CharityActionKey.Equals(message.CharityActionKey));
+            var charityAction =
+                await _context.CharityActions.FirstOrDefaultAsync(b =>
+                    b.CharityActionKey.Equals(message.CharityActionKey));
             if (charityAction != null)
             {
                 if (charityAction.IsApproved)
-                    return new ApproveCharityActionResponse
-                    {
-                        ErrorType = ErrorType.AlreadyActive
-                    };
+                    return Error(ErrorType.AlreadyActive);
 
                 charityAction.IsApproved = true;
-                if (!await _context.TrySaveChangesAsync()) return new ApproveCharityActionResponse();
 
-                var charityActionCreatedEvent = _mapper.Map<CharityActionCreatedEvent>(charityAction);
-                await _bus.PublishAsync(charityActionCreatedEvent);
-
-                return ApproveCharityActionResponse.Success();
+                return await _context.TrySaveChangesAsync<ApproveCharityActionResponse>(async () =>
+                    await _bus.PublishAsync<CharityAction, CharityActionCreatedEvent>(charityAction, _mapper));
             }
 
-            return new ApproveCharityActionResponse
-            {
-                ErrorType = ErrorType.NotFound
-            };
+            return Error(ErrorType.NotFound);
         }
     }
 }
