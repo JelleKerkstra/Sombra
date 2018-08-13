@@ -38,8 +38,13 @@ namespace Sombra.CharityActionService
 
                 charityAction.IsApproved = true;
 
-                return await _context.TrySaveChangesAsync<ApproveCharityActionResponse>(async () =>
-                    await _bus.PublishAsync<CharityAction, CharityActionCreatedEvent>(charityAction, _mapper));
+                if (await _context.TrySaveChangesAsync())
+                {
+                    await _bus.PublishAsync(_mapper.Map<CharityActionCreatedEvent>(charityAction));
+                    return Success();
+                }
+
+                return Error(ErrorType.DatabaseError);
             }
 
             return Error(ErrorType.NotFound);

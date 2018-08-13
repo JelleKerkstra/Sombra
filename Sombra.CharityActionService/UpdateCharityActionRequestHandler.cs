@@ -39,8 +39,13 @@ namespace Sombra.CharityActionService
             _context.UserKeys.AddRange(mappedKeys);
             charityAction.UserKeys = mappedKeys;
 
-            return await _context.TrySaveChangesAsync<UpdateCharityActionResponse>(async () =>
-                await _bus.PublishAsync<CharityAction, CharityActionUpdatedEvent>(charityAction, _mapper));
+            if (await _context.TrySaveChangesAsync())
+            {
+                await _bus.PublishAsync(_mapper.Map<CharityActionUpdatedEvent>(charityAction));
+                return Success();
+            }
+
+            return Error(ErrorType.DatabaseError);
         }
     }
 }

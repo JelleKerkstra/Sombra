@@ -30,7 +30,7 @@ namespace Sombra.StoryService
                 return await _context.TrySaveChangesAsync<ApproveStoryResponse>();
             }
 
-            return Error(ErrorType = ErrorType.NotFound);
+            return Error(ErrorType.NotFound);
         }
     }
 }
