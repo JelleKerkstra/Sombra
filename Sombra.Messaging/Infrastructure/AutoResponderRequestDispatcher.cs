@@ -17,7 +17,7 @@ namespace Sombra.Messaging.Infrastructure
         public async Task<TResponse> DispatchAsync<TRequest, TResponse, THandler>(TRequest message)
             where TRequest : class, IRequest<TResponse>
             where THandler : IAsyncRequestHandler<TRequest, TResponse>
-            where TResponse : class, IResponse
+            where TResponse : class, IResponse, new()
         {
             ExtendedConsole.Log($"{message.GetType().Name} received");
             var handler = _serviceProvider.GetRequiredService<THandler>();
@@ -35,7 +35,7 @@ namespace Sombra.Messaging.Infrastructure
                 Logger.LogExceptionAsync(ex, false, handler.GetType().Name);
             }
 
-            return (TResponse) Activator.CreateInstance<TResponse>().RequestFailed();
+            return new TResponse().RequestFailed();
         }
     }
 }

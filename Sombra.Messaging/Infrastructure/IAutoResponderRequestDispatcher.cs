@@ -7,6 +7,6 @@ namespace Sombra.Messaging.Infrastructure
         Task<TResponse> DispatchAsync<TRequest, TResponse, THandler>(TRequest message)
             where TRequest : class, IRequest<TResponse>
             where THandler : IAsyncRequestHandler<TRequest, TResponse>
-            where TResponse : class, IResponse;
+            where TResponse : class, IResponse, new();
     }
 }

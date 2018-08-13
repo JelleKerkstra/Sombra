@@ -6,11 +6,5 @@ namespace Sombra.Messaging
     {
         [IgnoreMap]
         public bool IsRequestSuccessful { get; set; } = true;
-
-        public IResponse RequestFailed()
-        {
-            IsRequestSuccessful = false;
-            return this;
-        }
     }
 }

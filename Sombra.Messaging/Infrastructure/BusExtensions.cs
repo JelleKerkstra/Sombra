@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using EasyNetQ;
 using Sombra.Core;
 
@@ -31,7 +30,7 @@ namespace Sombra.Messaging.Infrastructure
                 ExtendedConsole.Log($"Request {request.GetType().Name} failed. Exception: {ex}");
                 Logger.LogExceptionAsync(ex, true);
 
-                return Task.FromResult((TResponse)new TResponse().RequestFailed());
+                return Task.FromResult(new TResponse().RequestFailed());
             }
         }
 
@@ -45,9 +44,5 @@ namespace Sombra.Messaging.Infrastructure
 
             return bus;
         }
-
-        public static Task PublishAsync<TSource, TEvent>(this IBus bus, TSource source, IMapper mapper)
-            where TEvent : class, IEvent
-        => bus.PublishAsync(mapper.Map<TEvent>(source));
     }
 }
