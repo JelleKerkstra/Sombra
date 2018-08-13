@@ -12,7 +12,7 @@ using Sombra.UserService.DAL;
 
 namespace Sombra.UserService
 {
-    public class UpdateUserRequestHandler : IAsyncRequestHandler<UpdateUserRequest, UpdateUserResponse>
+    public class UpdateUserRequestHandler : AsyncCrudRequestHandler<UpdateUserRequest, UpdateUserResponse>
     {
         private readonly UserContext _context;
         private readonly IMapper _mapper;
@@ -25,16 +25,11 @@ namespace Sombra.UserService
             _bus = bus;
         }
 
-        public async Task<UpdateUserResponse> Handle(UpdateUserRequest message)
+        public override async Task<UpdateUserResponse> Handle(UpdateUserRequest message)
         {
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserKey == message.UserKey);
             if (existingUser == null)
-            {
-                return new UpdateUserResponse
-                {
-                    ErrorType = ErrorType.NotFound
-                };
-            }
+                return Error(ErrorType.NotFound);
 
             var isEmailAddressUniqueHandler = new UserEmailExistsRequestHandler(_context);
             var request = new UserEmailExistsRequest
@@ -45,12 +40,7 @@ namespace Sombra.UserService
 
             var response = await isEmailAddressUniqueHandler.Handle(request);
             if (response.EmailExists)
-            {
-                return new UpdateUserResponse
-                {
-                    ErrorType = ErrorType.EmailExists
-                };
-            }
+                return Error(ErrorType.EmailExists);
 
             _context.Entry(existingUser).CurrentValues.SetValues(message);
             if (!await _context.TrySaveChangesAsync()) return new UpdateUserResponse();
@@ -58,7 +48,7 @@ namespace Sombra.UserService
             var userUpdatedEvent = _mapper.Map<UserUpdatedEvent>(existingUser);
             await _bus.PublishAsync(userUpdatedEvent);
 
-            return UpdateUserResponse.Success();
+            return Success();
         }
     }
 }

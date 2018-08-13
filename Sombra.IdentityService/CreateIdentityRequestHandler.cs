@@ -27,9 +27,7 @@ namespace Sombra.IdentityService
             if (message.CredentialType == CredentialType.Email)
             {
                 if (await _context.Credentials.AnyAsync(c => c.CredentialType == CredentialType.Email && c.Identifier.Equals(message.Identifier, StringComparison.OrdinalIgnoreCase)))
-                {
                     return Error(ErrorType.EmailExists);
-                }
             }
 
             var activationToken = Hash.SHA256(Guid.NewGuid().ToString());

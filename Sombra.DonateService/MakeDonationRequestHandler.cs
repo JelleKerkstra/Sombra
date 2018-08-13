@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sombra.Core;
 using Sombra.Core.Enums;
 using Sombra.DonateService.DAL;
 using Sombra.Messaging.Infrastructure;
@@ -11,7 +10,7 @@ using Sombra.Messaging.Responses.Donate;
 
 namespace Sombra.DonateService
 {
-    public class MakeDonationRequestHandler : IAsyncRequestHandler<MakeDonationRequest, MakeDonationResponse>
+    public class MakeDonationRequestHandler : AsyncCrudRequestHandler<MakeDonationRequest, MakeDonationResponse>
     {
         private readonly DonationsContext _context;
         private readonly IMapper _mapper;
@@ -22,18 +21,13 @@ namespace Sombra.DonateService
             _mapper = mapper;
         }
 
-        public async Task<MakeDonationResponse> Handle(MakeDonationRequest message)
+        public override async Task<MakeDonationResponse> Handle(MakeDonationRequest message)
         {
             if (message.CharityActionKey.HasValue)
             {
                 var charityAction = await _context.CharityActions.SingleOrDefaultAsync(c => c.CharityActionKey == message.CharityActionKey.Value);
                 if (charityAction == null)
-                {
-                    return new MakeDonationResponse
-                    {
-                        ErrorType = ErrorType.CharityActionNotFound
-                    };
-                }
+                    return Error(ErrorType.CharityActionNotFound);
 
                 var charityActionDonation = _mapper.Map<CharityActionDonation>(message);
                 charityActionDonation.CharityAction = charityAction;
@@ -42,12 +36,7 @@ namespace Sombra.DonateService
                 {
                     var user = await _context.Users.SingleOrDefaultAsync(u => u.UserKey == message.UserKey.Value);
                     if (user == null)
-                    {
-                        return new MakeDonationResponse
-                        {
-                            ErrorType = ErrorType.UserNotFound
-                        };
-                    }
+                        return Error(ErrorType.UserNotFound);
 
                     charityActionDonation.User = user;
                 }
@@ -71,12 +60,7 @@ namespace Sombra.DonateService
 
             var charity = await _context.Charities.SingleOrDefaultAsync(c => c.CharityKey == message.CharityKey);
             if (charity == null)
-            {
-                return new MakeDonationResponse
-                {
-                    ErrorType = ErrorType.CharityNotFound
-                };
-            }
+                return Error(ErrorType.CharityNotFound);
 
             var charityDonation = _mapper.Map<CharityDonation>(message);
             charityDonation.Charity = charity;
@@ -85,12 +69,7 @@ namespace Sombra.DonateService
             {
                 var user = await _context.Users.SingleOrDefaultAsync(u => u.UserKey == message.UserKey.Value);
                 if (user == null)
-                {
-                    return new MakeDonationResponse
-                    {
-                        ErrorType = ErrorType.UserNotFound
-                    };
-                }
+                    return Error(ErrorType.UserNotFound);
 
                 charityDonation.User = user;
             }

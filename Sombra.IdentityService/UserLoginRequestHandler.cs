@@ -25,9 +25,7 @@ namespace Sombra.IdentityService
             if (credential != null)
             {
                 if (!credential.User.IsActive)
-                {
                     return Error(ErrorType.InactiveAccount);
-                }
 
                 return new UserLoginResponse
                 {

@@ -9,7 +9,7 @@ using Sombra.StoryService.DAL;
 
 namespace Sombra.StoryService
 {
-    public class CreateStoryRequestHandler : IAsyncRequestHandler<CreateStoryRequest, CreateStoryResponse>
+    public class CreateStoryRequestHandler : AsyncCrudRequestHandler<CreateStoryRequest, CreateStoryResponse>
     {
         private readonly StoryContext _context;
         private readonly IMapper _mapper;
@@ -20,15 +20,11 @@ namespace Sombra.StoryService
             _mapper = mapper;
         }
 
-        public async Task<CreateStoryResponse> Handle(CreateStoryRequest message)
+        public override async Task<CreateStoryResponse> Handle(CreateStoryRequest message)
         {
             var story = _mapper.Map<Story>(message);
             if (story.StoryKey == default)
-            {
-                return new CreateStoryResponse {
-                    ErrorType = ErrorType.InvalidKey
-                };
-            }
+                return Error(ErrorType.InvalidKey);
 
             if (message.AuthorUserKey.HasValue)
             {
@@ -39,21 +35,13 @@ namespace Sombra.StoryService
                 }
                 else
                 {
-                    return new CreateStoryResponse
-                    {
-                        ErrorType = ErrorType.InvalidUserKey
-                    };
+                    return Error(ErrorType.InvalidUserKey);
                 }
             }
 
             var charity = await _context.Charities.FirstOrDefaultAsync(c => c.CharityKey == message.CharityKey);
             if (charity == null)
-            {
-                return new CreateStoryResponse
-                {
-                    ErrorType = ErrorType.CharityNotFound
-                };
-            }
+                return Error(ErrorType.CharityNotFound);
 
             story.Charity = charity;
             _context.Stories.Add(story);

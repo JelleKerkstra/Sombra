@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using EasyNetQ;
-using Microsoft.EntityFrameworkCore;
-using Sombra.Core;
 using Sombra.Core.Enums;
 using Sombra.Messaging.Events.User;
 using Sombra.Messaging.Infrastructure;
@@ -12,7 +10,7 @@ using Sombra.UserService.DAL;
 
 namespace Sombra.UserService
 {
-    public class CreateUserRequestHandler : IAsyncRequestHandler<CreateUserRequest, CreateUserResponse>
+    public class CreateUserRequestHandler : AsyncCrudRequestHandler<CreateUserRequest, CreateUserResponse>
     {
         private readonly UserContext _context;
         private readonly IMapper _mapper;
@@ -25,16 +23,11 @@ namespace Sombra.UserService
             _bus = bus;
         }
 
-        public async Task<CreateUserResponse> Handle(CreateUserRequest message)
+        public override async Task<CreateUserResponse> Handle(CreateUserRequest message)
         {
             var user = _mapper.Map<User>(message);
             if (user.UserKey == default)
-            {
-                return new CreateUserResponse
-                {
-                    ErrorType = ErrorType.InvalidKey
-                };
-            }
+                return Error(ErrorType.InvalidKey);
 
             var isEmailAddressUniqueHandler = new UserEmailExistsRequestHandler(_context);
             var request = new UserEmailExistsRequest
@@ -45,12 +38,7 @@ namespace Sombra.UserService
 
             var response = await isEmailAddressUniqueHandler.Handle(request);
             if (response.EmailExists)
-            {
-                return new CreateUserResponse
-                {
-                    ErrorType = ErrorType.EmailExists
-                };
-            }
+                return Error(ErrorType.EmailExists);
 
             _context.Users.Add(user);
 
@@ -59,7 +47,7 @@ namespace Sombra.UserService
             var userCreatedEvent = _mapper.Map<UserCreatedEvent>(user);
             await _bus.PublishAsync(userCreatedEvent);
 
-            return CreateUserResponse.Success();
+            return Success();
         }
     }
 }
