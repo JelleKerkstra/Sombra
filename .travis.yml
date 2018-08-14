@@ -5,7 +5,7 @@ services:
 env:
   DOCKER_COMPOSE_VERSION: 1.19.0
 stages:
-- name: deploy
+  name: deploy
   if: branch = master
 before_install:
 - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -25,8 +25,7 @@ before_script:
 - docker volume create --name=rabbitmqdata
 - docker volume create --name=portainerdata
 script:
-- docker-compose -f docker-compose.ci.yml -f docker-compose.tests.yml build
-before_deploy:
-  skip_cleanup: true
+- docker-compose -f docker-compose.build.yml -f docker-compose.tests.yml build
+before_deploy:  
 - docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}
-- ./push-images.sh
+- ./push-images.sh 

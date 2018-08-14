@@ -3,4 +3,3 @@ images=$(docker image ls --format "{{.Repository}}" | grep -P "^($DC_REPOSITORY/
 for image in $images; do
 	docker push $image
 done
-$SHELL
