@@ -4,27 +4,29 @@ services:
 - docker
 env:
   DOCKER_COMPOSE_VERSION: 1.19.0
+stages:
+- name: deploy
+  if: branch = master
 before_install:
 - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu
   $(lsb_release -cs) stable"
 - sudo apt-get update
 - sudo apt-get -y install docker-ce
-- docker-compose --version
 - sudo rm /usr/local/bin/docker-compose
+install:
 - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname
   -s`-`uname -m` > docker-compose
 - chmod +x docker-compose
 - sudo mv docker-compose /usr/local/bin
-
+before_script:
 - docker volume create --name=sqlserverdata
 - docker volume create --name=mongoserverdata
 - docker volume create --name=rabbitmqdata
 - docker volume create --name=portainerdata
-
-- docker-compose -f docker-compose.yml -f docker-compose.tests.yml build
-- docker-compose -f docker-compose.yml -f docker-compose.tests.yml up -d
 script:
-- docker ps
-after_script:
-- docker-compose down
+- docker-compose -f docker-compose.ci.yml -f docker-compose.tests.yml build
+before_deploy:
+  skip_cleanup: true
+- docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}
+- ./push-images.sh
