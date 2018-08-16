@@ -3,9 +3,7 @@ WORKDIR /app
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
-COPY *.sln ./
-COPY Sombra.Web.UnitTests/Sombra.Web.UnitTests.csproj Sombra.Web.UnitTests/
-COPY Sombra.Web/Sombra.Web.csproj Sombra.Web/
+COPY Sombra.Web.UnitTests.csproj Sombra.Web.UnitTests/
 
 COPY . .
 WORKDIR /src/Sombra.Web.UnitTests
