@@ -3,9 +3,7 @@ version: '3.4'
 services:
   sombra.web.unittests:
     image: sombra.web.unittests
-    build:
-      context: .
-      dockerfile: Sombra.Web.UnitTests/Dockerfile
+    build: ./Sombra.Web.UnitTests
 
   sombra.core.unittests:
     image: sombra.core.unittests
