@@ -3,7 +3,7 @@ version: '3.4'
 services:
   sombra.web.unittests:
     image: sombra.web.unittests
-    build: ./Sombra.Web.UnitTests
+    build: ./Sombra.Web.UnitTests/
 
   sombra.core.unittests:
     image: sombra.core.unittests
