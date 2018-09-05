@@ -8,10 +8,10 @@ COPY Sombra.TemplateService/Sombra.TemplateService.csproj Sombra.TemplateService
 COPY . .
 WORKDIR /src/Sombra.TemplateService
 
-RUN dotnet build -c Debug -o /app
+RUN dotnet build -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish -c Debug -o /app
+RUN dotnet publish -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
