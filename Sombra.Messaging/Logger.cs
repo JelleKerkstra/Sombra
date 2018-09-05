@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using EasyNetQ;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,5 +36,8 @@ namespace Sombra.Messaging
 
         public static void LogWebrequest(WebRequest request)
             => Bus.Send(ServiceInstaller.WebRequestsQueue, request);
+
+        public static void LogWebrequest(string url, DateTime dateTimeStamp, Dictionary<string, string> routeValues)
+            => LogWebrequest(new WebRequest(url, dateTimeStamp, routeValues));
     }
 }

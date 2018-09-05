@@ -11,12 +11,7 @@ namespace Sombra.Web.Infrastructure.Filters
     {
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            Logger.LogWebrequest(new WebRequest
-            {
-                DateTimeStamp = DateTime.UtcNow,
-                Url = context.HttpContext.Request.Path,
-                RouteValues = context.RouteData.Values.ToDictionary(pair => pair.Key, pair => pair.Value.ToString())
-            });
+            Logger.LogWebrequest(context.HttpContext.Request.Path, DateTime.UtcNow, context.RouteData.Values.ToDictionary(pair => pair.Key, pair => pair.Value.ToString()));
         }
 
         public void OnActionExecuted(ActionExecutedContext context) { }
