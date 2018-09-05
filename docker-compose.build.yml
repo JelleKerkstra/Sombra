@@ -2,84 +2,84 @@ version: '3.4'
 
 services:
   sombra.web:
-    image: ${DC_REPOSITORY}/sombra.web:1.0.0
+    image: ${DC_REPOSITORY}/sombra.web:1.0.0-${BUILD_NUMBER}
     container_name: sombra.web
     build:
       context: .
       dockerfile: Sombra.Web/Dockerfile
 
   sombra.charityservice:
-    image: ${DC_REPOSITORY}/sombra.charityservice:1.0.0  
+    image: ${DC_REPOSITORY}/sombra.charityservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.charityservice
     build:
       context: .
       dockerfile: Sombra.CharityService/Dockerfile
 
   sombra.charityactionservice:
-    image: ${DC_REPOSITORY}/sombra.charityactionservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.charityactionservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.charityactionservice
     build:
       context: .
       dockerfile: Sombra.CharityActionService/Dockerfile
 
   sombra.emailservice:
-    image: ${DC_REPOSITORY}/sombra.emailservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.emailservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.emailservice
     build:
       context: .
       dockerfile: Sombra.EmailService/Dockerfile
   
   sombra.identityservice:
-    image: ${DC_REPOSITORY}/sombra.identityservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.identityservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.identityservice
     build:
       context: .
       dockerfile: Sombra.IdentityService/Dockerfile
       
   sombra.templateservice:
-    image: ${DC_REPOSITORY}/sombra.templateservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.templateservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.templateservice
     build:
       context: .
       dockerfile: Sombra.TemplateService/Dockerfile
 
   sombra.userservice:
-    image: ${DC_REPOSITORY}/sombra.userservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.userservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.userservice
     build:
       context: .
       dockerfile: Sombra.UserService/Dockerfile
 
   sombra.donateservice:
-    image: ${DC_REPOSITORY}/sombra.donateservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.donateservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.donateservice
     build:
       context: .
       dockerfile: Sombra.DonateService/Dockerfile
 
   sombra.loggingservice:
-    image: ${DC_REPOSITORY}/sombra.loggingservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.loggingservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.loggingservice
     build:
       context: .
       dockerfile: Sombra.LoggingService/Dockerfile
 
   sombra.searchservice:
-    image: ${DC_REPOSITORY}/sombra.searchservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.searchservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.searchservice
     build:
       context: .
       dockerfile: Sombra.SearchService/Dockerfile
 
   sombra.timeservice:
-    image: ${DC_REPOSITORY}/sombra.timeservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.timeservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.timeservice
     build:
       context: .
       dockerfile: Sombra.TimeService/Dockerfile
 
   sombra.storyservice:
-    image: ${DC_REPOSITORY}/sombra.storyservice:1.0.0
+    image: ${DC_REPOSITORY}/sombra.storyservice:1.0.0-${BUILD_NUMBER}
     container_name: sombra.storyservice
     build:
       context: .

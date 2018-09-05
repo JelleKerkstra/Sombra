@@ -4,6 +4,7 @@ services:
 - docker
 env:
   DOCKER_COMPOSE_VERSION: 1.19.0
+  BUILD_NUMBER: $TRAVIS_BUILD_NUMBER
 stages:
   name: deploy
   if: branch = master
