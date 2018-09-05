@@ -16,7 +16,7 @@ namespace Sombra.Messaging
             _serviceProvider = serviceProvider;
         }
 
-        private static IBus Bus => (IBus) _serviceProvider.GetRequiredService(typeof(IBus));
+        private static IBus Bus => _serviceProvider.GetRequiredService<IBus>();
 
         public static Task LogMessageAsync(IMessage message)
             => Bus.SendAsync(ServiceInstaller.LoggingQueue, message);
