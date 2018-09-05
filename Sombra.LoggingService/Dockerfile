@@ -8,10 +8,10 @@ COPY Sombra.LoggingService/Sombra.LoggingService.csproj Sombra.LoggingService/
 COPY . .
 WORKDIR /src/Sombra.LoggingService
 
-RUN dotnet build -c Debug -o /app
+RUN dotnet build -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish -c Debug -o /app
+RUN dotnet publish -c Release -o /app
 
 FROM base AS final
 WORKDIR /app

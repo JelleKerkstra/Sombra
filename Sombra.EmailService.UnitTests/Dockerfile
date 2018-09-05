@@ -9,6 +9,6 @@ COPY Sombra.EmailService.UnitTests/Sombra.EmailService.UnitTests.csproj Sombra.E
 COPY . .
 WORKDIR /src/Sombra.EmailService.UnitTests
 
-RUN dotnet build -c Debug -o /app
+RUN dotnet build -c Release -o /app
 
 RUN dotnet test
