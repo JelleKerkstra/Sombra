@@ -9,7 +9,7 @@ using Sombra.UserService.DAL;
 
 namespace Sombra.UserService
 {
-    public class GetUserByEmailRequestHandler : IAsyncRequestHandler<GetUserByEmailRequest, GetUserByEmailResponse>
+    public class GetUserByEmailRequestHandler : AsyncRequestHandler<GetUserByEmailRequest, GetUserByEmailResponse>
     {
         private readonly UserContext _context;
         private readonly IMapper _mapper;
@@ -20,10 +20,10 @@ namespace Sombra.UserService
             _mapper = mapper;
         }
 
-        public async Task<GetUserByEmailResponse> Handle(GetUserByEmailRequest message)
+        public override async Task<GetUserByEmailResponse> Handle(GetUserByEmailRequest message)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress.Equals(message.EmailAddress, StringComparison.InvariantCultureIgnoreCase));
-            return user != null ? _mapper.Map<GetUserByEmailResponse>(user) : new GetUserByEmailResponse();
+            return MapMayBeNull(user, _mapper);
         }
     }
 }

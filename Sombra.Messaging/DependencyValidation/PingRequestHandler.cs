@@ -3,11 +3,11 @@ using Sombra.Messaging.Infrastructure;
 
 namespace Sombra.Messaging.DependencyValidation
 {
-    public class PingRequestHandler<TRequest, TResponse> : IAsyncRequestHandler<TRequest, TResponse>
+    public class PingRequestHandler<TRequest, TResponse> : AsyncRequestHandler<TRequest, TResponse>
         where TRequest : class, IRequest<TResponse>
         where TResponse : PingResponse, new()
     {
-        public Task<TResponse> Handle(TRequest message)
+        public override Task<TResponse> Handle(TRequest message)
         {
             return Task.FromResult(new TResponse
             {

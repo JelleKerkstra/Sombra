@@ -11,7 +11,7 @@ using CredentialType = Sombra.Core.Enums.CredentialType;
 
 namespace Sombra.IdentityService
 {
-    public class ForgotPasswordRequestHandler : IAsyncRequestHandler<ForgotPasswordRequest, ForgotPasswordResponse>
+    public class ForgotPasswordRequestHandler : AsyncRequestHandler<ForgotPasswordRequest, ForgotPasswordResponse>
     {
         private readonly AuthenticationContext _context;
 
@@ -20,7 +20,7 @@ namespace Sombra.IdentityService
             _context = context;
         }
 
-        public async Task<ForgotPasswordResponse> Handle(ForgotPasswordRequest message)
+        public override async Task<ForgotPasswordResponse> Handle(ForgotPasswordRequest message)
         {
             var credential = await _context.Credentials.FirstOrDefaultAsync(c => c.Identifier == message.Email && c.CredentialType == CredentialType.Email && c.User.IsActive);
 

@@ -14,7 +14,7 @@ using Sombra.Messaging.Shared;
 
 namespace Sombra.SearchService
 {
-    public class GetSearchResultRequestHandler : IAsyncRequestHandler<GetSearchResultRequest, GetSearchResultResponse>
+    public class GetSearchResultRequestHandler : AsyncRequestHandler<GetSearchResultRequest, GetSearchResultResponse>
     {
         private readonly SearchContext _context;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace Sombra.SearchService
             _mapper = mapper;
         }
 
-        public async Task<GetSearchResultResponse> Handle(GetSearchResultRequest message)
+        public override async Task<GetSearchResultResponse> Handle(GetSearchResultRequest message)
         {
             Expression<Func<Content, bool>> filter = c => true;
 

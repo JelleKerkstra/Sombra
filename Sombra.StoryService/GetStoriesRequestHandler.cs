@@ -12,7 +12,7 @@ using Sombra.StoryService.DAL;
 
 namespace Sombra.StoryService
 {
-    public class GetStoriesRequestHandler : IAsyncRequestHandler<GetStoriesRequest, GetStoriesResponse>
+    public class GetStoriesRequestHandler : AsyncRequestHandler<GetStoriesRequest, GetStoriesResponse>
     {
         private readonly StoryContext _context;
         private readonly IMapper _mapper;
@@ -23,7 +23,7 @@ namespace Sombra.StoryService
             _mapper = mapper;
         }
 
-        public async Task<GetStoriesResponse> Handle(GetStoriesRequest message)
+        public override async Task<GetStoriesResponse> Handle(GetStoriesRequest message)
         {
             Expression<Func<Story, bool>> filter = _ => true;
             if (message.CharityKey != default) filter = filter.And(s => s.Charity.CharityKey == message.CharityKey);

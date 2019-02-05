@@ -12,7 +12,7 @@ using CredentialType = Sombra.Core.Enums.CredentialType;
 
 namespace Sombra.IdentityService
 {
-    public class GetUserActivationTokenRequestHandler : IAsyncRequestHandler<GetUserActivationTokenRequest, GetUserActivationTokenResponse>
+    public class GetUserActivationTokenRequestHandler : AsyncRequestHandler<GetUserActivationTokenRequest, GetUserActivationTokenResponse>
     {
         private readonly AuthenticationContext _context;
 
@@ -21,7 +21,7 @@ namespace Sombra.IdentityService
             _context = context;
         }
 
-        public async Task<GetUserActivationTokenResponse> Handle(GetUserActivationTokenRequest message)
+        public override async Task<GetUserActivationTokenResponse> Handle(GetUserActivationTokenRequest message)
         {
             if (string.IsNullOrEmpty(message.EmailAddress))
                 return new GetUserActivationTokenResponse

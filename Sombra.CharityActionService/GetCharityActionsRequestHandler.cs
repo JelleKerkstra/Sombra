@@ -14,7 +14,7 @@ using Sombra.Messaging.Responses.CharityAction;
 
 namespace Sombra.CharityActionService
 {
-    public class GetCharityActionsRequestHandler : IAsyncRequestHandler<GetCharityActionsRequest, GetCharityActionsResponse>
+    public class GetCharityActionsRequestHandler : AsyncRequestHandler<GetCharityActionsRequest, GetCharityActionsResponse>
     {
         private readonly CharityActionContext _charityActionContext;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace Sombra.CharityActionService
             _mapper = mapper;
         }
 
-        public async Task<GetCharityActionsResponse> Handle(GetCharityActionsRequest message)
+        public override async Task<GetCharityActionsResponse> Handle(GetCharityActionsRequest message)
         {
             Expression<Func<CharityAction, bool>> filter = c => true;
 

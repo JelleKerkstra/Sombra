@@ -10,7 +10,7 @@ using Sombra.UserService.DAL;
 
 namespace Sombra.UserService
 {
-    public class UserEmailExistsRequestHandler : IAsyncRequestHandler<UserEmailExistsRequest, UserEmailExistsResponse>
+    public class UserEmailExistsRequestHandler : AsyncRequestHandler<UserEmailExistsRequest, UserEmailExistsResponse>
     {
         private readonly UserContext _context;
 
@@ -19,7 +19,7 @@ namespace Sombra.UserService
             _context = context;
         }
 
-        public async Task<UserEmailExistsResponse> Handle(UserEmailExistsRequest message)
+        public override async Task<UserEmailExistsResponse> Handle(UserEmailExistsRequest message)
         {
             Expression<Func<User, bool>> filter = u => u.EmailAddress.Equals(message.EmailAddress, StringComparison.OrdinalIgnoreCase);
             if (message.CurrentUserKey != default)

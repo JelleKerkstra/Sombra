@@ -8,7 +8,7 @@ using Sombra.Messaging.Responses.CharityAction;
 
 namespace Sombra.CharityActionService
 {
-    public class GetCharityActionByKeyRequestHandler : IAsyncRequestHandler<GetCharityActionByKeyRequest, GetCharityActionByKeyResponse>
+    public class GetCharityActionByKeyRequestHandler : AsyncRequestHandler<GetCharityActionByKeyRequest, GetCharityActionByKeyResponse>
     {
         private readonly CharityActionContext _charityActionContext;
         private readonly IMapper _mapper;
@@ -19,11 +19,11 @@ namespace Sombra.CharityActionService
             _mapper = mapper;
         }
 
-        public async Task<GetCharityActionByKeyResponse> Handle(GetCharityActionByKeyRequest message)
+        public override async Task<GetCharityActionByKeyResponse> Handle(GetCharityActionByKeyRequest message)
         {
             var charityAction = await _charityActionContext.CharityActions.Include(b => b.UserKeys).Include(b => b.Charity).FirstOrDefaultAsync(b => b.CharityActionKey.Equals(message.CharityActionKey));
 
-            return charityAction != null ? _mapper.Map<GetCharityActionByKeyResponse>(charityAction) : new GetCharityActionByKeyResponse();
+            return MapMayBeNull(charityAction, _mapper);
         }
     }
 }

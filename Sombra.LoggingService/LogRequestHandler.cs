@@ -11,7 +11,7 @@ using Sombra.Messaging.Responses.Logging;
 
 namespace Sombra.LoggingService
 {
-    public class LogRequestHandler : IAsyncRequestHandler<LogRequest, LogResponse>
+    public class LogRequestHandler : AsyncRequestHandler<LogRequest, LogResponse>
     {
         private readonly IMongoCollection<LogEntry> _logCollection;
         private readonly IMapper _mapper;
@@ -23,7 +23,7 @@ namespace Sombra.LoggingService
              _mapper = mapper;
         }
 
-        public async Task<LogResponse> Handle(LogRequest message)
+        public override async Task<LogResponse> Handle(LogRequest message)
         {
             Expression<Func<LogEntry, bool>> filter = l => true;
 

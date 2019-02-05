@@ -2,7 +2,6 @@
 using AutoMapper;
 using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
-using Sombra.Core;
 using Sombra.Core.Enums;
 using Sombra.Messaging.Events.User;
 using Sombra.Messaging.Infrastructure;
