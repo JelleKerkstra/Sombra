@@ -7,18 +7,11 @@ namespace Sombra.Messaging.Infrastructure
         where TRequest : IRequest<TResponse>
         where TResponse : class, IResponse, new()
     {
-        protected IMapper Mapper;
-
-        protected AsyncRequestHandler(IMapper mapper)
-        {
-            Mapper = mapper;
-        }
-
         public abstract Task<TResponse> Handle(TRequest message);
 
-        protected TResponse MapMayBeNull<TEntity>(TEntity entity)
+        protected TResponse MapMayBeNull<TEntity>(TEntity entity, IMapper mapper)
         {
-            return entity != null ? Mapper.Map<TResponse>(entity) : new TResponse();
+            return entity != null ? mapper.Map<TResponse>(entity) : new TResponse();
         }
     }
 }

@@ -9,8 +9,6 @@ namespace Sombra.Messaging.Infrastructure
         where TRequest : IRequest<TResponse>
         where TResponse : CrudResponse<TResponse>, new()
     {
-        protected AsyncCrudRequestHandler(IMapper mapper) : base(mapper) { }
-
         public TResponse Error(ErrorType errorType) => CrudResponse<TResponse>.Error(errorType);
         public TResponse Success() => CrudResponse<TResponse>.Success();
     }
