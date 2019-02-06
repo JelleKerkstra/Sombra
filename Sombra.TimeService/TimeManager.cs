@@ -15,25 +15,28 @@ namespace Sombra.TimeService
     public class TimeManager
     {
         private readonly Dictionary<TimeInterval, CheckHolder> _lastCheck = new Dictionary<TimeInterval, CheckHolder>();
-        private readonly CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource _cancellationTokenSource;
         private Task _task;
         private readonly IBus _bus;
         private readonly TimeContext _context;
 
         public TimeManager(IBus bus, TimeContext context)
         {
-            _cancellationTokenSource = new CancellationTokenSource();
             _bus = bus;
             _context = context;
         }
         public void Start()
         {
+            // Make sure it isn't running already
+            if (_cancellationTokenSource != null) Stop();
+
             var now = DateTime.UtcNow;
             GetHistory(TimeInterval.Day, TimeSpan.FromDays(1), now);
             GetHistory(TimeInterval.Week, TimeSpan.FromDays(7), now);
             GetHistory(TimeInterval.Month, TimeSpan.FromDays(365.25) / 12, now);
             GetHistory(TimeInterval.Year, TimeSpan.FromDays(365.25), now);
 
+            _cancellationTokenSource = new CancellationTokenSource();
             _task = Task.Run(Worker, _cancellationTokenSource.Token);
         }
 
