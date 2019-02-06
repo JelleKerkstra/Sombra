@@ -14,7 +14,7 @@ namespace Sombra.TimeService
 {
     public class TimeManager
     {
-        private readonly Dictionary<TimeInterval, CheckHolder> _lastCheck = new Dictionary<TimeInterval, CheckHolder>();
+        private Dictionary<TimeInterval, CheckHolder> _lastCheck;
         private CancellationTokenSource _cancellationTokenSource;
         private Task _task;
         private readonly IBus _bus;
@@ -31,6 +31,7 @@ namespace Sombra.TimeService
             if (_cancellationTokenSource != null) Stop();
 
             var now = DateTime.UtcNow;
+            _lastCheck = new Dictionary<TimeInterval, CheckHolder>();
             GetHistory(TimeInterval.Day, TimeSpan.FromDays(1), now);
             GetHistory(TimeInterval.Week, TimeSpan.FromDays(7), now);
             GetHistory(TimeInterval.Month, TimeSpan.FromDays(365.25) / 12, now);
