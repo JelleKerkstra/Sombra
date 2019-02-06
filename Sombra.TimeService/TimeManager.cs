@@ -44,7 +44,7 @@ namespace Sombra.TimeService
 
         private async Task Worker()
         {
-            while (true)
+            while (!_cancellationTokenSource.IsCancellationRequested)
             {
                 var now = DateTime.UtcNow;
                 await CheckInterval(TimeInterval.Day, now, time => _bus.PublishAsync(new DayHasPassedEvent(time)));
