@@ -47,7 +47,6 @@ namespace Sombra.Messaging.Infrastructure
 
                     var busRespondMethod = genericBusRepondMethod.MakeGenericMethod(responderinfo.MessageType, responderinfo.ResponseType);
                     busRespondMethod.Invoke(Bus, new object[] { dispatchDelegate });
-                    ExtendedConsole.Log($"{responderinfo.ConcreteType.Name} initialized.");
                 }
             }
         }
