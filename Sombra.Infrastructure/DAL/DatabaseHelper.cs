@@ -28,8 +28,14 @@ namespace Sombra.Infrastructure.DAL
                 ExtendedConsole.Log($"Applying migrations for {connectionString.ContextType.Name}");
                 using (var context = (DbContext)serviceProvider.GetRequiredService(connectionString.ContextType))
                 {
-                    if (context.Database.GetPendingMigrations().Any())
+                    var migrations = context.Database.GetPendingMigrations();
+                    if (migrations.Any())
                     {
+                        ExtendedConsole.Log($"Applying the following {migrations.Count()} migrations for {connectionString.ContextType.Name}:");
+                        foreach (var migration in migrations)
+                        {
+                            ExtendedConsole.Log(migration);
+                        }
                         context.Database.Migrate();
                         ExtendedConsole.Log($"Finished applying migrations for {connectionString.ContextType.Name}");
                     }
