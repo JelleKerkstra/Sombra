@@ -6,11 +6,10 @@ using Sombra.Infrastructure.DAL;
 using Sombra.Messaging.Infrastructure;
 using Sombra.Messaging.Requests.Donate;
 using Sombra.Messaging.Responses.Donate;
-using Sombra.Messaging.Shared;
 
 namespace Sombra.DonateService
 {
-    public class GetCharitiesRequestHandler : IAsyncRequestHandler<GetCharitiesRequest, GetCharitiesResponse>
+    public class GetCharitiesRequestHandler : AsyncRequestHandler<GetCharitiesRequest, GetCharitiesResponse>
     {
         private readonly DonationsContext _context;
         private readonly IMapper _mapper;
@@ -21,7 +20,7 @@ namespace Sombra.DonateService
             _mapper = mapper;
         }
 
-        public async Task<GetCharitiesResponse> Handle(GetCharitiesRequest message)
+        public override async Task<GetCharitiesResponse> Handle(GetCharitiesRequest message)
         {
             return new GetCharitiesResponse
             {

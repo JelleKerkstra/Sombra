@@ -13,7 +13,7 @@ using Sombra.Messaging.Responses.Charity;
 
 namespace Sombra.CharityService
 {
-    public class GetCharitiesRequestHandler : IAsyncRequestHandler<GetCharitiesRequest, GetCharitiesResponse>
+    public class GetCharitiesRequestHandler : AsyncRequestHandler<GetCharitiesRequest, GetCharitiesResponse>
     {
         private readonly CharityContext _context;
         private readonly IMapper _mapper;
@@ -24,7 +24,7 @@ namespace Sombra.CharityService
             _mapper = mapper;
         }
 
-        public async Task<GetCharitiesResponse> Handle(GetCharitiesRequest message)
+        public override async Task<GetCharitiesResponse> Handle(GetCharitiesRequest message)
         {
             Expression<Func<Charity, bool>> filter = c => true;
             if (message.Category != Category.None) filter = filter.And(c => c.Category.HasFlag(message.Category));

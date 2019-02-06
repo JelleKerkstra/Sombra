@@ -10,7 +10,7 @@ using Sombra.Messaging.Shared;
 
 namespace Sombra.CharityActionService
 {
-    public class GetCharitiesRequestHandler : IAsyncRequestHandler<GetCharitiesRequest, GetCharitiesResponse>
+    public class GetCharitiesRequestHandler : AsyncRequestHandler<GetCharitiesRequest, GetCharitiesResponse>
     {
         private readonly CharityActionContext _context;
         private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace Sombra.CharityActionService
             _mapper = mapper;
         }
 
-        public async Task<GetCharitiesResponse> Handle(GetCharitiesRequest message)
+        public override async Task<GetCharitiesResponse> Handle(GetCharitiesRequest message)
         {
             return new GetCharitiesResponse
             {

@@ -10,7 +10,7 @@ using Sombra.Messaging.Responses.Identity;
 
 namespace Sombra.IdentityService
 {
-    public class ChangePasswordRequestHandler : IAsyncRequestHandler<ChangePasswordRequest, ChangePasswordResponse>
+    public class ChangePasswordRequestHandler : AsyncRequestHandler<ChangePasswordRequest, ChangePasswordResponse>
     {
         private readonly AuthenticationContext _context;
 
@@ -19,7 +19,7 @@ namespace Sombra.IdentityService
             _context = context;
         }
 
-        public async Task<ChangePasswordResponse> Handle(ChangePasswordRequest message)
+        public override async Task<ChangePasswordResponse> Handle(ChangePasswordRequest message)
         {
             var credential = await _context.Credentials.FirstOrDefaultAsync(c => c.SecurityToken == message.SecurityToken && c.User.IsActive);
 

@@ -8,7 +8,7 @@ using Sombra.UserService.DAL;
 
 namespace Sombra.UserService
 {
-    public class GetUserByKeyRequestHandler : IAsyncRequestHandler<GetUserByKeyRequest, GetUserByKeyResponse>
+    public class GetUserByKeyRequestHandler : AsyncRequestHandler<GetUserByKeyRequest, GetUserByKeyResponse>
     {
         private readonly UserContext _context;
         private readonly IMapper _mapper;
@@ -19,10 +19,10 @@ namespace Sombra.UserService
             _mapper = mapper;
         }
 
-        public async Task<GetUserByKeyResponse> Handle(GetUserByKeyRequest message)
+        public override async Task<GetUserByKeyResponse> Handle(GetUserByKeyRequest message)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserKey == message.UserKey);
-            return user != null ? _mapper.Map<GetUserByKeyResponse>(user) : new GetUserByKeyResponse();
+            return MapMayBeNull(user, _mapper);
         }
     }
 }

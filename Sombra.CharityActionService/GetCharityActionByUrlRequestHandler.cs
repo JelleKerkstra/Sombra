@@ -9,7 +9,7 @@ using Sombra.Messaging.Responses.CharityAction;
 
 namespace Sombra.CharityActionService
 {
-    public class GetCharityActionByUrlRequestHandler : IAsyncRequestHandler<GetCharityActionByUrlRequest, GetCharityActionByUrlResponse>
+    public class GetCharityActionByUrlRequestHandler : AsyncRequestHandler<GetCharityActionByUrlRequest, GetCharityActionByUrlResponse>
     {
         private readonly CharityActionContext _charityActionContext;
         private readonly IMapper _mapper;
@@ -20,12 +20,12 @@ namespace Sombra.CharityActionService
             _mapper = mapper;
         }
 
-        public async Task<GetCharityActionByUrlResponse> Handle(GetCharityActionByUrlRequest message)
+        public override async Task<GetCharityActionByUrlResponse> Handle(GetCharityActionByUrlRequest message)
         {
             var charityAction = await _charityActionContext.CharityActions.Include(b => b.UserKeys).Include(b => b.Charity)
                 .FirstOrDefaultAsync(b => b.UrlComponent.Equals(message.CharityActionUrlComponent, StringComparison.OrdinalIgnoreCase) && b.Charity.Url.Equals(message.CharityUrl, StringComparison.OrdinalIgnoreCase));
 
-            return charityAction != null ? _mapper.Map<GetCharityActionByUrlResponse>(charityAction) : new GetCharityActionByUrlResponse();
+            return MapMayBeNull(charityAction, _mapper);
         }
     } 
 }

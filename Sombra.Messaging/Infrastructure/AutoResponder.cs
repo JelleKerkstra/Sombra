@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using EasyNetQ;
+using Sombra.Core;
 
 namespace Sombra.Messaging.Infrastructure
 {
@@ -46,6 +47,7 @@ namespace Sombra.Messaging.Infrastructure
 
                     var busRespondMethod = genericBusRepondMethod.MakeGenericMethod(responderinfo.MessageType, responderinfo.ResponseType);
                     busRespondMethod.Invoke(Bus, new object[] { dispatchDelegate });
+                    ExtendedConsole.Log($"{responderinfo.ConcreteType.Name} initialized.");
                 }
             }
         }

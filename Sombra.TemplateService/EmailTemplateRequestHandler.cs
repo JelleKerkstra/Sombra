@@ -7,7 +7,7 @@ using Sombra.Messaging.Responses.Template;
 
 namespace Sombra.TemplateService
 {
-    public class EmailTemplateRequestHandler : IAsyncRequestHandler<EmailTemplateRequest, EmailTemplateResponse>
+    public class EmailTemplateRequestHandler : AsyncRequestHandler<EmailTemplateRequest, EmailTemplateResponse>
     {
         private readonly EmailTemplateContext _emailTemplateContext;
 
@@ -16,7 +16,7 @@ namespace Sombra.TemplateService
             _emailTemplateContext = emailTemplateContext;
         }
 
-        public async Task<EmailTemplateResponse> Handle(EmailTemplateRequest message)
+        public override async Task<EmailTemplateResponse> Handle(EmailTemplateRequest message)
         {
             var response = new EmailTemplateResponse();
 

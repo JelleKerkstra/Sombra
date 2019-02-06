@@ -10,7 +10,7 @@ using Sombra.StoryService.DAL;
 
 namespace Sombra.StoryService
 {
-    public class GetRandomStoriesRequestHandler : IAsyncRequestHandler<GetRandomStoriesRequest, GetRandomStoriesResponse>
+    public class GetRandomStoriesRequestHandler : AsyncRequestHandler<GetRandomStoriesRequest, GetRandomStoriesResponse>
     {
         private readonly StoryContext _context;
         private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace Sombra.StoryService
             _mapper = mapper;
         }
 
-        public async Task<GetRandomStoriesResponse> Handle(GetRandomStoriesRequest message)
+        public override async Task<GetRandomStoriesResponse> Handle(GetRandomStoriesRequest message)
         {
             return new GetRandomStoriesResponse
             {

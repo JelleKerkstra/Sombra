@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Sombra.Core;
 using Sombra.Core.Enums;
 using Sombra.Infrastructure.DAL;
 using Sombra.Messaging.Infrastructure;
@@ -13,7 +12,7 @@ using Sombra.SearchService.DAL;
 
 namespace Sombra.SearchService
 {
-    public class GetRandomCharitiesRequestHandler : IAsyncRequestHandler<GetRandomCharitiesRequest, GetRandomCharitiesResponse>
+    public class GetRandomCharitiesRequestHandler : AsyncRequestHandler<GetRandomCharitiesRequest, GetRandomCharitiesResponse>
     {
         private readonly SearchContext _context;
         private readonly IMapper _mapper;
@@ -24,7 +23,7 @@ namespace Sombra.SearchService
             _mapper = mapper;
         }
 
-        public async Task<GetRandomCharitiesResponse> Handle(GetRandomCharitiesRequest message)
+        public override async Task<GetRandomCharitiesResponse> Handle(GetRandomCharitiesRequest message)
         {
             return new GetRandomCharitiesResponse
             {
