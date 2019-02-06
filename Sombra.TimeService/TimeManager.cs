@@ -16,7 +16,6 @@ namespace Sombra.TimeService
     {
         private Dictionary<TimeInterval, CheckHolder> _lastCheck;
         private CancellationTokenSource _cancellationTokenSource;
-        private Task _task;
         private readonly IBus _bus;
         private readonly TimeContext _context;
 
@@ -38,7 +37,7 @@ namespace Sombra.TimeService
             GetHistory(TimeInterval.Year, TimeSpan.FromDays(365.25), now);
 
             _cancellationTokenSource = new CancellationTokenSource();
-            _task = Task.Run(Worker, _cancellationTokenSource.Token);
+            Task.Run(Worker, _cancellationTokenSource.Token);
         }
 
         public void Stop()
