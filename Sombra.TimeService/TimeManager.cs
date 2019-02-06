@@ -47,10 +47,10 @@ namespace Sombra.TimeService
             while (true)
             {
                 var now = DateTime.UtcNow;
-                await CheckInterval(TimeInterval.Day, now, time => _bus.PublishAsync(new DayHasPassedEvent(now)));
-                await CheckInterval(TimeInterval.Week, now, time => _bus.PublishAsync(new WeekHasPassedEvent(now)));
-                await CheckInterval(TimeInterval.Month, now, time => _bus.PublishAsync(new MonthHasPassedEvent(now)));
-                await CheckInterval(TimeInterval.Year, now, time => _bus.PublishAsync(new YearHasPassedEvent(now)));
+                await CheckInterval(TimeInterval.Day, now, time => _bus.PublishAsync(new DayHasPassedEvent(time)));
+                await CheckInterval(TimeInterval.Week, now, time => _bus.PublishAsync(new WeekHasPassedEvent(time)));
+                await CheckInterval(TimeInterval.Month, now, time => _bus.PublishAsync(new MonthHasPassedEvent(time)));
+                await CheckInterval(TimeInterval.Year, now, time => _bus.PublishAsync(new YearHasPassedEvent(time)));
                 Thread.Sleep(10000);
             }
         }
